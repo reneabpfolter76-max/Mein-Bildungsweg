@@ -20,6 +20,14 @@ export interface LoginInput {
 
 export type LoginResult = { ok: true; identity: Identity } | { ok: false; error: string };
 
+/** Vergleich ohne Leerzeichen am Rand und ohne Groß-/Kleinschreibung (Handy-Tastaturen). */
+export function codeMatches(input: string, expected: string): boolean {
+  const a = input.trim().toLowerCase();
+  const b = expected.trim().toLowerCase();
+  if (!b) return false;
+  return safeEqual(a, b);
+}
+
 function safeEqual(a: string, b: string): boolean {
   const ab = Buffer.from(a);
   const bb = Buffer.from(b);
@@ -34,8 +42,8 @@ export function simulatedMyWifiLogin(input: LoginInput): LoginResult {
     return { ok: false, error: "Bitte eine Testpersonen-ID angeben (z. B. T01, nur Buchstaben und Ziffern)." };
   }
   let role: Identity["role"];
-  if (safeEqual(input.accessCode, config.adminAccessCode)) role = "admin";
-  else if (safeEqual(input.accessCode, config.pilotAccessCode)) role = "tester";
+  if (codeMatches(input.accessCode, config.adminAccessCode)) role = "admin";
+  else if (codeMatches(input.accessCode, config.pilotAccessCode)) role = "tester";
   else return { ok: false, error: "Zugangscode ist nicht gültig." };
 
   const profile = getProfile(input.profileId);

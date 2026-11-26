@@ -33,9 +33,9 @@ export default function LoginForm({ profiles }: Props) {
   return (
     <form onSubmit={submit}>
       <label htmlFor="tester">Testpersonen-ID</label>
-      <input id="tester" value={testerId} onChange={(e) => setTesterId(e.target.value)} placeholder="z. B. T01" autoComplete="off" required />
+      <input id="tester" value={testerId} onChange={(e) => setTesterId(e.target.value)} placeholder="z. B. T01" autoComplete="off" autoCapitalize="characters" autoCorrect="off" spellCheck={false} required />
       <label htmlFor="code">Zugangscode</label>
-      <input id="code" type="password" value={accessCode} onChange={(e) => setAccessCode(e.target.value)} required />
+      <input id="code" type="password" autoCapitalize="none" autoCorrect="off" spellCheck={false} value={accessCode} onChange={(e) => setAccessCode(e.target.value)} required />
       <label htmlFor="profile">Simuliertes myWIFI-Profil</label>
       <select id="profile" value={profileId} onChange={(e) => setProfileId(e.target.value)}>
         {profiles.map((p) => (
