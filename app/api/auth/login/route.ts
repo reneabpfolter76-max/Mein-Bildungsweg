@@ -10,7 +10,12 @@ export async function POST(req: Request) {
     profileId: String(body.profileId ?? ""),
   });
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: 401 });
-  const res = NextResponse.json({ ok: true, role: result.identity.role });
-  res.cookies.set(SESSION_COOKIE, await signSession(result.identity), sessionCookieOptions);
-  return res;
+  try {
+    const res = NextResponse.json({ ok: true, role: result.identity.role });
+    res.cookies.set(SESSION_COOKIE, await signSession(result.identity), sessionCookieOptions);
+    return res;
+  } catch (e) {
+    console.error("Anmeldung fehlgeschlagen", e);
+    return NextResponse.json({ error: "Technischer Fehler bei der Anmeldung. Bitte „Einrichtung prüfen“ öffnen." }, { status: 500 });
+  }
 }

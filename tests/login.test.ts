@@ -9,3 +9,20 @@ describe("Zugangscode", () => {
     expect(codeMatches("", "")).toBe(false);
   });
 });
+
+import { config, setupStatus } from "@/lib/config";
+
+describe("Konfiguration", () => {
+  it("funktioniert ohne SESSION_SECRET und zeigt keine Werte", () => {
+    const old = { ...process.env };
+    delete process.env.SESSION_SECRET;
+    process.env.PILOT_ACCESS_CODE = "  Geheim123 ";
+    expect(config.sessionSecret).toMatch(/^[0-9a-f]{64}$/);
+    expect(config.pilotAccessCode).toBe("Geheim123");
+    const status = setupStatus();
+    expect(status.find((s) => s.name === "PILOT_ACCESS_CODE")?.set).toBe(true);
+    expect(status.find((s) => s.name === "SESSION_SECRET")?.set).toBe(false);
+    expect(JSON.stringify(status)).not.toContain("Geheim123");
+    process.env = old;
+  });
+});

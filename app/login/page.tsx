@@ -2,6 +2,9 @@ import { redirect } from "next/navigation";
 import { getIdentity } from "@/lib/auth/session";
 import { SIMULATED_PROFILES } from "@/lib/data/profiles";
 import LoginForm from "@/components/LoginForm";
+import { setupStatus } from "@/lib/config";
+
+export const dynamic = "force-dynamic";
 
 export default async function LoginPage() {
   if (await getIdentity()) redirect("/");
@@ -22,6 +25,18 @@ export default async function LoginPage() {
           </p>
           <LoginForm profiles={profiles} />
         </div>
+        <details className="card small" style={{ marginTop: 16 }}>
+          <summary>Einrichtung prüfen (für Administration)</summary>
+          <p className="muted">Zeigt nur, ob die Einstellungen in Vercel gefunden wurden – keine Werte.</p>
+          <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+            {setupStatus().map((s) => (
+              <li key={s.name} style={{ marginBottom: 6 }}>
+                {s.set ? "✅" : "⚪️"} <code>{s.name}</code>
+                <div className="muted">{s.set ? "gefunden" : `nicht gesetzt – ${s.hint}`}</div>
+              </li>
+            ))}
+          </ul>
+        </details>
       </div>
     </>
   );
