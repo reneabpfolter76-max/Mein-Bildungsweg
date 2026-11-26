@@ -18,11 +18,12 @@ interface Props {
   isAdmin: boolean;
   profileName: string;
   demoMode: boolean;
+  tempStorage: boolean;
 }
 
 const LEVEL_NAMES: Record<string, string> = { L1: "Kursinformation", L2: "Fachberatung", L3: "Bildungsorientierung" };
 
-export default function Chat({ userId, isAdmin, profileName, demoMode }: Props) {
+export default function Chat({ userId, isAdmin, profileName, demoMode, tempStorage }: Props) {
   const [cases, setCases] = useState<CaseSummary[]>([]);
   const [active, setActive] = useState<Case | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -125,6 +126,7 @@ export default function Chat({ userId, isAdmin, profileName, demoMode }: Props) 
       </div>
       <div className="banner">
         Sie sprechen mit einer KI. Auskünfte sind unverbindlich. Fiktive Kurs- und Kundendaten, Buchungen sind simuliert.
+        {tempStorage && " Testbetrieb: Fälle werden nur vorübergehend gespeichert."}
       </div>
       <div className="layout">
         <aside className="sidebar">

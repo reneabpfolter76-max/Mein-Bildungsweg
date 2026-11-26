@@ -12,14 +12,14 @@ export function getStore(): Store {
   if (url && key) {
     store = new SupabaseStore(url, key);
   } else {
-    if (process.env.VERCEL) {
-      throw new Error("Auf Vercel ist Supabase erforderlich: SUPABASE_URL und SUPABASE_SERVICE_ROLE_KEY setzen.");
-    }
-    store = new FileStore(config.dataDir);
+    // Auf Vercel ohne Supabase: nur temporärer Speicher (/tmp) für einen schnellen Test.
+    // Daten können jederzeit verloren gehen – für den echten Pilot Supabase einrichten.
+    store = new FileStore(process.env.VERCEL ? "/tmp/bildungsnavigator" : config.dataDir);
   }
   return store;
 }
 
-export function storageBackend(): "supabase" | "lokal" {
-  return config.supabaseUrl && config.supabaseServiceRoleKey ? "supabase" : "lokal";
+export function storageBackend(): "supabase" | "lokal" | "temporaer" {
+  if (config.supabaseUrl && config.supabaseServiceRoleKey) return "supabase";
+  return process.env.VERCEL ? "temporaer" : "lokal";
 }
